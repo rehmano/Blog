@@ -1,3 +1,7 @@
 package com.app.blog.model
 
-data class Post(val user: User, val id: Long, val title: String, val content: String)
+import com.app.blog.dao.BodyType
+
+data class Post (val title: String,
+                 val body_type: BodyType,
+                 val body: String)

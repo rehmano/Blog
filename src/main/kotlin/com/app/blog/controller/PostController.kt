@@ -1,7 +1,8 @@
 package com.app.blog.controller
 
+import com.app.blog.dao.BodyType
 import com.app.blog.model.Post
-import com.app.blog.model.User
+import org.jetbrains.exposed.sql.Query
 import org.springframework.web.bind.annotation.*
 import java.util.concurrent.atomic.AtomicLong
 
@@ -11,10 +12,16 @@ class PostController {
 
     val counter = AtomicLong()
 
-    @GetMapping("/")
-    fun getPost(@RequestParam(value = "title", defaultValue = "default title") title: String,
-             @RequestParam(value = "content", defaultValue = "default content") content: String) : Post {
-        return Post(User("robbyzambito", "5t4n"), counter.incrementAndGet(), title, content)
+    @RequestMapping("/")
+    fun getPosts() : List<Post> {
+        return postsDao.selectAll()
+    }
+
+    @RequestMapping(value = ["/"], params = ["text", "body_type", "content"])
+    fun postPost(@RequestParam text: String,
+                 @RequestParam body_type: BodyType,
+                 @RequestParam content: String) : Query {
+        return postsDao.insert(Post(text, body_type, content))
     }
 
 }
