@@ -1,14 +1,18 @@
 package com.app.blog.controller
 
 import com.app.blog.dao.BodyType
+import com.app.blog.dao.PostsDao
 import com.app.blog.model.Post
 import org.jetbrains.exposed.sql.Query
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
 import java.util.concurrent.atomic.AtomicLong
 
 
 @RestController
-class PostController {
+class PostController @Autowired constructor(
+        private val postsDao: PostsDao
+) {
 
     val counter = AtomicLong()
 
@@ -17,7 +21,7 @@ class PostController {
         return postsDao.selectAll()
     }
 
-    @RequestMapping(value = ["/"], params = ["text", "body_type", "content"])
+    @PutMapping(value = ["/post"])
     fun postPost(@RequestParam text: String,
                  @RequestParam body_type: BodyType,
                  @RequestParam content: String) : Query {
