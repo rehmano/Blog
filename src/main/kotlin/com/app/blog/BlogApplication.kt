@@ -1,11 +1,13 @@
 package com.app.blog
 
 import com.app.blog.dao.PostsDao
+import com.app.blog.dao.UsersDao
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Bean
 import org.springframework.transaction.annotation.EnableTransactionManagement
+import java.util.*
 import javax.sql.DataSource
 
 @SpringBootApplication
@@ -16,6 +18,10 @@ class BlogApplication @Autowired constructor(
 	@Bean
 	fun getPostsDao(): PostsDao {
 		return PostsDao(dataSource = dataSource)
+	}
+	@Bean
+	fun getUsersDao(): UsersDao {
+		return UsersDao(dataSource = dataSource)
 	}
 }
 

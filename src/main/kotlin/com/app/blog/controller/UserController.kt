@@ -2,7 +2,9 @@ package com.app.blog.controller
 
 import com.app.blog.dao.post_type
 import com.app.blog.dao.PostsDao
+import com.app.blog.dao.UsersDao
 import com.app.blog.model.Post
+import com.app.blog.model.User
 import org.jetbrains.exposed.sql.Query
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
@@ -12,22 +14,22 @@ import javax.servlet.http.HttpSession
 
 
 @RestController
-class PostController @Autowired constructor(
-        private val postsDao: PostsDao
+class UserController @Autowired constructor(
+        private val usersDao: UsersDao
 ) {
 
     val counter = AtomicLong()
 
-    @RequestMapping("/")
-    fun getPosts() : List<Post> {
-        return postsDao.selectAll()
+    @RequestMapping("/user")
+    fun getPosts(session: HttpSession) : List<User> {
+        println(session.id)
+        return usersDao.selectAll()
     }
 
-    @PutMapping("/post")
-    fun postPost(@RequestBody post: Post,
-                 session: HttpSession) : Query {
-
-        return postsDao.insert(Post(post.title, post.body))
+    @PutMapping("/user/post")
+    fun postPost(@RequestBody user: User,
+                 session: HttpSession) {
+        return usersDao.insert(user)
     }
 
 }
