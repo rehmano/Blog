@@ -39,4 +39,7 @@ class PostsDao @Autowired constructor(
         }
         return Posts.select {Posts.title.eq(post.title)}
     }
+
+
+
 }
