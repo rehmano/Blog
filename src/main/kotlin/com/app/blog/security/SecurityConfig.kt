@@ -25,13 +25,13 @@ class SecurityConfig @Autowired constructor(val dataSource: DataSource) : WebSec
 
     @Throws(Exception::class)
     override fun configure(http: HttpSecurity) {
-        http
+        http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/resources/**", "/signup").permitAll()
-                .anyRequest().authenticated()
+                .antMatchers("/resources/**").permitAll()
+                .antMatchers("/signup").permitAll()
+                .antMatchers("/validate").permitAll()
                 .and()
                 .formLogin()
                 .loginPage("/login")
-                .permitAll()
     }
 }
