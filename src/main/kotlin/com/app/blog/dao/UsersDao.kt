@@ -1,19 +1,19 @@
 package com.app.blog.dao
 
 import com.app.blog.model.User
-import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.sql.Table
+import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Repository
-import org.springframework.transaction.annotation.Transactional
-import java.util.*
 import javax.sql.DataSource
 
 object Users : Table() {
-    val id = uuid("id")
-    val name = varchar("name", 31)
-    val pass = text("pass")
-    val date_created = date("date_created")
+    val name = varchar("username", 50)
+    val pass = varchar("password",200)
 }
 
 @Repository
@@ -29,16 +29,20 @@ class UsersDao @Autowired constructor(
     fun insert(user: User) {
         transaction(db1){
             Users.insert {
-                println("Adding user ${user.name} with pass ${user.pass}")
-                it[name] = user.name
-                it[pass] = user.pass
+                println("Adding user ${user.username} with pass ${user.password}")
+                it[name] = user.username
+                it[pass] = BCryptPasswordEncoder().encode(user.password)
             }
 
         }
     }
 
-    fun getId(user: User): List<UUID> =
-        transaction(db1){
-            Users.slice(Users.id, Users.name, Users.pass).select{Users.name eq user.name}.map{it[Users.id]}
+    fun doesExist(username: String): Boolean{
+        for(user in selectAll()){
+            if(user.username == username) {
+                return true
+            }
         }
+        return false
+    }
 }
