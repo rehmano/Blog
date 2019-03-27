@@ -1,48 +1,30 @@
 package com.app.blog.dao
 
-import com.app.blog.model.User
-import org.jetbrains.exposed.sql.Database
-import org.jetbrains.exposed.sql.Table
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.selectAll
+import com.app.blog.model.UserModel
+import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Repository
-import javax.sql.DataSource
-
-object Users : Table() {
-    val name = varchar("username", 50)
-    val pass = varchar("password",200)
-}
+import org.springframework.transaction.annotation.Transactional
 
 @Repository
+@Transactional
 class UsersDao @Autowired constructor(
-        dataSource: DataSource
+        val db1: Database,
+        val bCryptPasswordEncoder: BCryptPasswordEncoder
 ) {
 
-    val db1 = Database.connect(dataSource)
 
+    fun selectAll(): List<UserModel> = transaction(db1) { UsersTable.selectAll().map{ UserModel(it[UsersTable.name], it[UsersTable.pass]) } }
 
-    fun selectAll(): List<User> = transaction(db1) { Users.selectAll().map{ User(it[Users.name], it[Users.pass]) } }
-
-    fun insert(user: User) {
-        transaction(db1){
-            Users.insert {
+    fun insert(user: UserModel) {
+        transaction(db1) {
+            UsersTable.insert {
                 println("Adding user ${user.username} with pass ${user.password}")
                 it[name] = user.username
-                it[pass] = BCryptPasswordEncoder().encode(user.password)
-            }
-
-        }
-    }
-
-    fun doesExist(username: String): Boolean{
-        for(user in selectAll()){
-            if(user.username == username) {
-                return true
+                it[pass] = bCryptPasswordEncoder.encode(user.password)
             }
         }
-        return false
     }
 }

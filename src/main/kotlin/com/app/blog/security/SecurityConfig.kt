@@ -11,27 +11,27 @@ import javax.sql.DataSource
 
 @Configuration
 @EnableWebSecurity
-class SecurityConfig @Autowired constructor(val dataSource: DataSource) : WebSecurityConfigurerAdapter() {
+class SecurityConfig @Autowired constructor(val dataSource: DataSource, val bCryptPasswordEncoder: BCryptPasswordEncoder) : WebSecurityConfigurerAdapter() {
 
     @Autowired
     @Throws(Exception::class)
     fun configureGlobal(auth: AuthenticationManagerBuilder) {
         auth.jdbcAuthentication()
-                .dataSource(dataSource)
-                .passwordEncoder(BCryptPasswordEncoder())
                 .usersByUsernameQuery("select username, password, enabled from users where username=?")
                 .authoritiesByUsernameQuery("select username, authority from authorities where username=?")
+                .dataSource(dataSource)
+                .passwordEncoder(bCryptPasswordEncoder)
+
     }
 
     @Throws(Exception::class)
     override fun configure(http: HttpSecurity) {
         http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/resources/**").permitAll()
-                .antMatchers("/signup").permitAll()
-                .antMatchers("/validate").permitAll()
+                    .antMatchers("/resources/**").permitAll()
+                    .antMatchers("/signup").permitAll()
                 .and()
                 .formLogin()
-                .loginPage("/login")
+                    .loginPage("/login")
     }
 }

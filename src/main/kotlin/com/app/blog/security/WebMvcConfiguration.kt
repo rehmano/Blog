@@ -12,6 +12,6 @@ class WebMvcConfiguration : WebMvcConfigurer {
     override fun addViewControllers(registry: ViewControllerRegistry) {
         registry.addViewController("/login").setViewName("login")
         registry.addViewController("/signup").setViewName("signup")
-        registry.setOrder(Ordered.HIGHEST_PRECEDENCE)
+        registry.addViewController("/").setViewName("index")
     }
 }
