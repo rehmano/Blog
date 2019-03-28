@@ -33,6 +33,7 @@ class SecurityConfig @Autowired constructor(val dataSource: DataSource, val bCry
                     .antMatchers("/resources/static/css/*").permitAll()
                     .antMatchers("/signup").permitAll()
                     .antMatchers("/").authenticated()
+                    .antMatchers("/admin").hasRole("ROLE_ADMIN")
                 .and()
                 .formLogin()
                     .loginPage("/login")
