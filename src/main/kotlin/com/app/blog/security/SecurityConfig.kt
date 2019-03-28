@@ -7,6 +7,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher
 import javax.sql.DataSource
 
 @Configuration
@@ -29,9 +30,15 @@ class SecurityConfig @Autowired constructor(val dataSource: DataSource, val bCry
         http.csrf().disable()
                 .authorizeRequests()
                     .antMatchers("/resources/**").permitAll()
+                    .antMatchers("/resources/static/css/*").permitAll()
                     .antMatchers("/signup").permitAll()
+                    .antMatchers("/").authenticated()
                 .and()
                 .formLogin()
                     .loginPage("/login")
+                .and()
+                .logout()
+                .logoutRequestMatcher(AntPathRequestMatcher("/logout"))
+                .logoutSuccessUrl("/")
     }
 }

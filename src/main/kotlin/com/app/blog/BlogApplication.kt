@@ -11,16 +11,14 @@ import org.springframework.context.annotation.Bean
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Controller
 import org.springframework.transaction.annotation.EnableTransactionManagement
-import org.springframework.web.bind.annotation.ControllerAdvice
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.ModelAttribute
-import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.validation.BindingResult
+import org.springframework.web.bind.annotation.*
+import org.springframework.web.servlet.ModelAndView
 import javax.sql.DataSource
 
 import javax.validation.Valid
 
 @SpringBootApplication(scanBasePackages = ["com.app.blog", "com.app.blog.dao"])
-@EnableTransactionManagement
 class BlogApplication @Autowired constructor(
         val dataSource: DataSource
 ){
@@ -48,28 +46,3 @@ class BlogApplication @Autowired constructor(
 fun main(args: Array<String>) {
     runApplication<BlogApplication>(*args)
 }
-
-@Controller
-@ControllerAdvice
-class UserServiceController @Autowired constructor(
-        val usersDao: UsersDao,
-        val authorityDao: AuthorityDao
-){
-    @ModelAttribute("user")
-    fun addUserAtt(): UserModel = UserModel()
-
-    @GetMapping("/signup")
-    fun signup(): String = "signup"
-
-    @PostMapping("/signup")
-    fun createUser(@Valid @ModelAttribute("user") user: UserModel): String{
-        println("${user.username} + ${user.password} has attempted to register!")
-        usersDao.insert(user)
-        authorityDao.insert(user)
-        return "login"
-    }
-}
-
-
-
-

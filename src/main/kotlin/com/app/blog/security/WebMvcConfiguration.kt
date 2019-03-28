@@ -3,6 +3,7 @@ package com.app.blog.security
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.Ordered
 import org.springframework.web.servlet.config.annotation.EnableWebMvc
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
@@ -13,5 +14,10 @@ class WebMvcConfiguration : WebMvcConfigurer {
         registry.addViewController("/login").setViewName("login")
         registry.addViewController("/signup").setViewName("signup")
         registry.addViewController("/").setViewName("index")
+    }
+
+    override fun addResourceHandlers(registry: ResourceHandlerRegistry) {
+        registry.addResourceHandler("/css/**")
+                .addResourceLocations("classpath:/static/css/")
     }
 }

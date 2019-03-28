@@ -4,31 +4,43 @@
 
 <head>
     <title>Sign in</title>
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-    <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.0.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/login.css}">
 </head>
 
 <body>
-<div class="container">
-    <div class="alert alert-danger" role="alert" th:if="${param.error}">
-        The username or password is incorrect!
-    </div>
-    <form th:action="@{/login}" method="post" >
-        <h1 class="h3 mb-3 font-weight-normal">Sign in</h1>
-        <label for="username" class="sr-only">Email</label>
-        <input type="text" id="username" name="username" class="form-control" placeholder="Username" required autofocus>
-        <label for="password" class="sr-only">Password</label>
-        <input type="password" id="password" name="password" class="form-control" placeholder="Password" required>
-        <div class="checkbox mb-3">
-            <label>
-                <input type="checkbox" name="remember-me" /> Remember me
-            </label>
+<div id="cover">
+    <div class="cover-caption">
+        <div class="container">
+            <div class="col-sm-6 offset-sm-3 text-center">
+                <div class="card">
+                    <form class="form-horizontal" th:action="@{/login}" method="post">
+                        <div class="card-header">
+                            <h3 class="font-weight-normal">Login</h3>
+                        </div>
+
+                        <div class="row form-group">
+                            <label for="username">Username:</label>
+                            <input type="text" id="username" name="username" class="form-control" placeholder="username" required autofocus>
+                        </div>
+
+                        <div class="row form-group">
+                            <label for="password">Password:</label>
+                            <input type="password" id="password" name="password" class="form-control" placeholder="password" required>
+                        </div>
+                        <div class="row">
+                            <button class="btn btn-lg btn-dark btn-block" type="submit">Sign in</button>
+                        </div>
+
+                        <div id="accountText" class="text-center"><span>Don't have an account?</span>  <a th:href="@{/signup}">Create an account</a></div>
+                    </form>
+                </div>
+            </div>
         </div>
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
-        <div class="margin-top20 text-center"> Don't have an account? <a th:href="@{/signup}">Create an account</a></div>
-    </form>
+    </div>
 </div>
 </body>
 </html>
