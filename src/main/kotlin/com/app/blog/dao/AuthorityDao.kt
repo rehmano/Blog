@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
 
 @Repository
+@Transactional
 class AuthorityDao constructor(
         val db1: Database
 ) {
@@ -19,6 +20,8 @@ class AuthorityDao constructor(
         val name = varchar("username", 50)
         val authority = varchar("authority",50)
     }
+
+
 
     fun insert(user: UserModel, authorityToSet: String = "ROLE_USER") {
         transaction(db1) {
