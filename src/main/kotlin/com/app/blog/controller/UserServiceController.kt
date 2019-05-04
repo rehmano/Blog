@@ -1,6 +1,7 @@
 package com.app.blog.controller
 
 import com.app.blog.dao.AuthorityDao
+import com.app.blog.dao.PostsDao
 import com.app.blog.dao.UsersDao
 import com.app.blog.model.UserModel
 import org.springframework.beans.factory.annotation.Autowired
@@ -14,7 +15,8 @@ import javax.validation.Valid
 @ControllerAdvice
 class UserServiceController @Autowired constructor(
         val usersDao: UsersDao,
-        val authorityDao: AuthorityDao
+        val authorityDao: AuthorityDao,
+        val postsDao: PostsDao
 ) {
 
     @GetMapping("/signup")
@@ -39,16 +41,25 @@ class UserServiceController @Autowired constructor(
             modelAndView.viewName = "signup"
         } else {
             usersDao.insert(user)
-            authorityDao.insert(user)
+            authorityDao.insert(user.username)
             modelAndView.viewName = "login"
         }
 
         return modelAndView
     }
 
+
     @RequestMapping("login")
     fun login(): String {
         return "login"
+    }
+
+    @GetMapping("/user/{username}")
+    fun getUser(@RequestParam username: String): ModelAndView {
+        val bareUser = usersDao.findOneByUsername(username)
+        //TODO check for null
+        val usersPosts = postsDao.getPostsForUsername(bareUser!!)
+        return ModelAndView()
     }
 
 }
