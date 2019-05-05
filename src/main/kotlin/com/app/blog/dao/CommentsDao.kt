@@ -2,7 +2,6 @@ package com.app.blog.dao
 
 import com.app.blog.model.Comment
 import com.app.blog.model.Post
-import kotlinx.coroutines.selects.select
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.stereotype.Repository

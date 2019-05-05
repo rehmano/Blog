@@ -46,7 +46,7 @@ class HomeController @Autowired constructor(
         val postAdded = postController.addPost(barePost = barePost)
         val modelAndView = ModelAndView()
         modelAndView.addObject("username", getCurrentlyLoggedUser())
-        modelAndView.addObject("posts", listOf(postAdded))
+        modelAndView.addObject("posts", postController.getNewPosts().reversed().map{it.toBarePost()})
         modelAndView.addObject("postToAdd", BarePost())
         modelAndView.viewName = "index"
         return modelAndView
