@@ -12,6 +12,7 @@ class WebMvcConfiguration : WebMvcConfigurer {
         registry.addViewController("/signup").setViewName("signup")
         registry.addViewController("/").setViewName("index")
         registry.addViewController("/post/{id}").setViewName("post")
+        registry.addViewController("/community").setViewName("communities")
     }
 
     override fun addCorsMappings(registry: CorsRegistry) {

@@ -146,7 +146,7 @@ class PostsDao constructor(
         var posts: List<Post> = listOf()
         transaction(db1) {
             posts = PostsTable.selectAll().orderBy(PostsTable.date_created to SortOrder.ASC)
-                    .map { it.toPostModel() }.takeLast(25)
+                    .map { it.toPostModel() }.takeLast(26)
         }
         return posts
     }
@@ -188,7 +188,7 @@ class PostsDao constructor(
      * Queries the database for the newest post for that username
      * getNewestPostForUsername(username: String) -> Post
      */
-    fun getNewestPostForUsername(username: String): Post {
+    fun getNewestPostForUsername(username: String): Post? {
         return getPostsForUsername(username).last()
     }
 

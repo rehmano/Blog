@@ -56,13 +56,18 @@
     <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item">
-                <a class="nav-link" href="#">Home</a>
+                <a class="nav-link" th:href="@{/}"
+                >Home</a
+                >
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">View Communities</a>
+                <a class="nav-link" th:href="@{/communities}">View Communities</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Account Settings</a>
+                <a class="nav-link" th:href="@{/account}">Account Settings</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/logout}">Logout</a>
             </li>
         </ul>
         <span class="m-2" th:text="${username}"></span>
@@ -106,7 +111,7 @@
 >
     <div class="modal-dialog" role="document">
         <form
-                th:action="@{/view/addposts}"
+                th:action="@{/post}"
                 th:object="${postToAdd}"
                 method="post"
         >

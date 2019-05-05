@@ -97,6 +97,10 @@ class PostController @Autowired constructor(
         }
     }
 
+    fun getNewestPostForUser(username: String): Post? {
+        return postsDao.getNewestPostForUsername(username)
+    }
+
     /**
      * Function: getCurrentlyLoggedUser() -> String
      * 1. Grabs currently logged user from SecurityContext
