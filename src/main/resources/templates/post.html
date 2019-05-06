@@ -54,10 +54,10 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav mr-auto">
-            <li class="nav-item">
+            <li class="nav-item active">
                 <a class="nav-link" th:href="@{/}">Home</a>
             </li>
-            <li class="nav-item active">
+            <li class="nav-item">
                 <a class="nav-link" th:href="@{/communities}"
                 >View Communities <span class="sr-only">(current)</span></a
                 >
@@ -82,17 +82,17 @@
 </nav>
 
 <div class="container">
-    <div class="card m-2">
+    <div class="card bg-dark m-2">
         <div class="card-header">
-            <h2 th:text="${postView.title}"></h2>
+            <h2 class="text-white" th:text="${postView.title}"></h2>
         </div>
         <div class="card-body">
-            <span th:text="${postView.content}"></span>
+            <span class="text-white" th:text="${postView.content}"></span>
             <hr />
 
             <div class="row m-2">
                 <div class="col-md-12" style="text-align: right">
-              <span
+              <span class="text-white"
                       th:text="| Created on | + ${postView.dateTime} + | by | + ${postView.username}"
               ></span>
                 </div>
@@ -161,7 +161,44 @@
     </div>
 </div>
 <script>
-    function grabPost() {
+    const getRepliesForCommentId = event => {
+        const comment_id = event.currentTarget.dataset.id;
+        $.get("/api/comments/load?id=" + comment_id, (datas, status) => {
+            for (const data of datas) {
+            console.log(data);
+            var element =
+                '<div class="container" id="' +
+                data.comment_id +
+                'Container"><div class="card m-2"><div class="row card-header"><div class="col-md-6"><h4>' +
+                data.content +
+                '</h4></div><div class="col-md-6" style="text-align:right"><span>Created at ' +
+                data.date_created +
+                " by: " +
+                data.username +
+                "</span></div></div>";
+
+            element +=
+                '<div class="row card-body"><div class="col-md-6"><button class="btn btn-primary mr-2">Reply</button>';
+            if (data.hasChildren) {
+                element +=
+                    '<button class="btn btn-danger" data-id="' +
+                    data.comment_id +
+                    '"id="' +
+                    data.comment_id +
+                    'Button">Load replies</button></div>';
+            }
+            element += '<div class="col-md-6"></div></div></div></div>';
+            $("#" + comment_id + "Container").append(element);
+            if (data.hasChildren) {
+                $("#" + data.comment_id + "Button").click(
+                    getRepliesForCommentId
+                );
+            }
+        }
+    });
+    };
+
+    const grabPost = () => {
         $.get(
             "/api/comments/base?" +
             window.location.href.substring(
@@ -170,12 +207,39 @@
             ),
             (datas, status) => {
             for (const data of datas) {
-                console.log(data);
+            console.log(data);
+            var element =
+                '<div class="container" id="' +
+                data.comment_id +
+                'Container"><div class="card bg-dark m-2"><div class="row card-header"><div class="col-md-6"><h4 class="text-white">' +
+                data.content +
+                '</h4></div><div class="col-md-6" style="text-align:right"><span class="text-white">Created at ' +
+                data.date_created +
+                " by: " +
+                data.username +
+                "</span></div></div>";
 
+            element +=
+                '<div class="row card-body"><div class="col-md-6"><button class="btn btn-primary mr-2">Reply</button>';
+            if (data.hasChildren) {
+                element +=
+                    '<button class="btn btn-danger" data-id="' +
+                    data.comment_id +
+                    '"id="' +
+                    data.comment_id +
+                    'Button">Load replies</button></div>';
+            }
+            element += '<div class="col-md-6"></div></div></div></div>';
+            $("#commentsContainer").append(element);
+            if (data.hasChildren) {
+                $("#" + data.comment_id + "Button").click(
+                    getRepliesForCommentId
+                );
+            }
         }
     }
     );
-    }
+    };
     grabPost();
 </script>
 </body>

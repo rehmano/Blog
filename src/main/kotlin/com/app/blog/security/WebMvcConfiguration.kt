@@ -15,13 +15,6 @@ class WebMvcConfiguration : WebMvcConfigurer {
         registry.addViewController("/community").setViewName("communities")
     }
 
-    override fun addCorsMappings(registry: CorsRegistry) {
-        registry.addMapping("/login")
-                .allowedOrigins("http://localhost:3000").allowCredentials(true)
-        registry.addMapping("/")
-                .allowedOrigins("http://localhost:3000")
-    }
-
     override fun addResourceHandlers(registry: ResourceHandlerRegistry) {
         registry.addResourceHandler("/css/**")
                 .addResourceLocations("classpath:/static/css/")

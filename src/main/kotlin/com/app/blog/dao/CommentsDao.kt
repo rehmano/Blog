@@ -3,6 +3,7 @@ package com.app.blog.dao
 import com.app.blog.model.Comment
 import com.app.blog.model.Post
 import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
@@ -130,7 +131,13 @@ class CommentsDao constructor(
      */
     fun getBaseCommentsForPost(id: Int): Map<Comment, Boolean> {
         println("[CommentsDao] Serving up comments for POSTID: \"${id}\"")
-        val comments: List<Comment>? = selectQuery(CommentsTable.post_id, id).orEmpty().filter { it.comment_chain_id == null }
+
+        var comments: List<Comment> = listOf()
+
+        transaction(db1) {
+            comments = CommentsTable.select{CommentsTable.post_id eq id and (CommentsTable.comment_chain_id.isNull() )}.orderBy(CommentsTable.date_created to SortOrder.DESC)
+                    .map{it.toCommentModel()}
+        }
 
         val commentsWithChild: MutableMap<Comment, Boolean> = mutableMapOf()
         comments.orEmpty().forEach{commentsWithChild[it] = doesCommentHaveChildren(it)}
@@ -145,7 +152,12 @@ class CommentsDao constructor(
     fun getCommentsForCommentId(commentid: Int) : Map<Comment, Boolean> {
         println("[CommentsDao] Serving up comments for COMMENTID: \"$commentid\"")
 
-        val comments: List<Comment>? = selectQuery(CommentsTable.comment_chain_id, commentid)
+        var comments: List<Comment> = listOf()
+        transaction(db1) {
+            comments = CommentsTable.select { CommentsTable.comment_chain_id eq commentid }.orderBy(CommentsTable.date_created to SortOrder.DESC)
+                    .map { it.toCommentModel() }
+        }
+
         val commentsWithChild: MutableMap<Comment, Boolean> = mutableMapOf()
 
         comments.orEmpty().forEach{commentsWithChild[it] = doesCommentHaveChildren(it)}

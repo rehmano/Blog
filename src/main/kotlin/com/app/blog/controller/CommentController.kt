@@ -32,15 +32,9 @@ class CommentController @Autowired constructor (
      * 2. Returns Map<Comment, Boolean> with boolean dictating if theres subcomments
      */
     @GetMapping("load")
-    fun loadComments(@RequestParam id: Int): Map<Comment, Boolean> = commentsDao.getCommentsForCommentId(id)
+    fun loadComments(@RequestParam id: Int): List<BareComment> = mapToBareComment(commentsDao.getCommentsForCommentId(id))
 
-    /**
-     * Function: loadBaseComments(id: Int) -> Map<Comment, Boolean>
-     * 1. Gets base comments for the passed post_id
-     */
-    @GetMapping("base")
-    fun loadBaseComments(@RequestParam id: Int): List<BareComment>{
-        val p = commentsDao.getBaseCommentsForPost(id)
+    fun mapToBareComment(p: Map<Comment, Boolean>): List<BareComment>{
         val x: MutableList<BareComment> = mutableListOf()
         p.forEach{
             val temp = it.key.toBareComment()
@@ -49,6 +43,14 @@ class CommentController @Autowired constructor (
         }
         x.forEach{println(it)}
         return x
+    }
+    /**
+     * Function: loadBaseComments(id: Int) -> Map<Comment, Boolean>
+     * 1. Gets base comments for the passed post_id
+     */
+    @GetMapping("base")
+    fun loadBaseComments(@RequestParam id: Int): List<BareComment> {
+        return mapToBareComment(commentsDao.getBaseCommentsForPost(id))
     }
 
     /**
