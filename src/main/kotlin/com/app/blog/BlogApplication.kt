@@ -1,8 +1,5 @@
 package com.app.blog
 
-import com.app.blog.dao.AuthorityDao
-import com.app.blog.dao.PostsDao
-import com.app.blog.dao.UsersDao
 import org.jetbrains.exposed.sql.Database
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.SpringBootApplication
@@ -15,23 +12,8 @@ class BlogApplication @Autowired constructor(
         val dataSource: DataSource
 ){
     @Bean
-    fun getUsersDao(): UsersDao {
-        return UsersDao(db1 = getDB(), bCryptPasswordEncoder = getBCrypt())
-    }
-
-    @Bean
-    fun getAuthorityDao(): AuthorityDao {
-        return AuthorityDao(db1 = getDB())
-    }
-
-    @Bean
-    fun getPostsDao(): PostsDao {
-        return PostsDao(db1 = getDB())
-    }
-
-    @Bean
     fun getBCrypt(): BCryptPasswordEncoder {
-        return BCryptPasswordEncoder()
+        return BCryptPasswordEncoder(8)
     }
 
     @Bean

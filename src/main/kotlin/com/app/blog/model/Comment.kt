@@ -8,7 +8,7 @@ data class Comment(val post_id: Int,
                    val comment_id: Int,
                    val username: String,
                    val comment_chain_id: Int?,
-                   val date_created: DateTime = DateTime.now(),
+                   val date_created: DateTime? = null,
                    val content: String){
     fun toBareComment(): BareComment {
         val dateTimeFormatter: DateTimeFormatter = DateTimeFormat.forPattern("MM/dd/yyyy HH:mm:ss")

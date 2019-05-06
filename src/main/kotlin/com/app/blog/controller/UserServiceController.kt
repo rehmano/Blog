@@ -5,6 +5,11 @@ import com.app.blog.dao.PostsDao
 import com.app.blog.dao.UsersDao
 import com.app.blog.model.UserModel
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.access.intercept.AbstractSecurityInterceptor
+import org.springframework.security.authentication.AuthenticationManager
+import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.core.userdetails.AuthenticationUserDetailsService
+import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.stereotype.Controller
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*

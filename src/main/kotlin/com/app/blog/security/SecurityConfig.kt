@@ -37,8 +37,6 @@ class SecurityConfig @Autowired constructor(val dataSource: DataSource, val bCry
     override fun configure(http: HttpSecurity) {
         http.csrf().disable()
                 .authorizeRequests()
-                    .antMatchers("/resources/**").permitAll()
-                    .antMatchers("/resources/static/css/*").permitAll()
                     .antMatchers("/signup").permitAll()
                     .antMatchers("/post").authenticated()
                     .antMatchers("/communities").authenticated()
