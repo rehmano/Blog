@@ -175,7 +175,7 @@ class PostsDao constructor(
         return postToRemove
     }
 
-    /**
+    /**postsDao.getNewPosts()
      * Checks if the username passed in owns the Post requested
      * doesOwnPost(username: String, id: Int) -> Boolean
      */

@@ -60,7 +60,7 @@ class PostController @Autowired constructor(
      * 2. Takes the id to get the next 25 posts to view
      */
     @GetMapping("newid")
-    fun loadMorePosts(id: Int): List<Post> = postsDao.getNewPosts(id)
+    fun loadMorePosts(@RequestParam id: Int): List<Post> = postsDao.getNewPosts(id)
 
     /**
      * Function: addPost(title: String, content: String) -> Post?
@@ -99,6 +99,27 @@ class PostController @Autowired constructor(
 
     fun getNewestPostForUser(username: String): Post? {
         return postsDao.getNewestPostForUsername(username)
+    }
+
+    /**
+     * Function: getNewPosts() -> List<Post>
+     * 1. Gets newest posts and returns in the form of an element
+     */
+
+    @GetMapping("/news")
+    fun getNewPostss(): List<BarePost> {
+        val posts = postsDao.getNewPosts()
+        val barePosts: MutableList<BarePost> = mutableListOf()
+        posts.forEach {barePosts.plusAssign(it.toBarePost())}
+        return barePosts.reversed()
+    }
+
+    @GetMapping("/new/{id}")
+    fun getNewPostFromId(@PathVariable(value="id") id: Int): List<BarePost> {
+        val posts = postsDao.getNewPosts(id)
+        val barePosts: MutableList<BarePost> = mutableListOf()
+        posts.forEach {barePosts.plusAssign(it.toBarePost())}
+        return barePosts.reversed()
     }
 
     /**

@@ -12,8 +12,7 @@
             crossorigin="anonymous"
     />
     <script
-            src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+            src="https://code.jquery.com/jquery-3.3.1.min.js"
             crossorigin="anonymous"
     ></script>
     <script
@@ -41,7 +40,7 @@
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
-    <a class="navbar-brand" th:href="@{/}">Blog</a>
+    <a class="navbar-brand" href="#">Blog</a>
     <button
             class="navbar-toggler"
             type="button"
@@ -56,12 +55,12 @@
     <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item">
-                <a class="nav-link" th:href="@{/}"
-                >Home</a
-                >
+                <a class="nav-link" th:href="@{/}">Home</a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" th:href="@{/communities}">View Communities</a>
+            <li class="nav-item active">
+                <a class="nav-link" th:href="@{/communities}"
+                >View Communities <span class="sr-only">(current)</span></a
+                >
             </li>
             <li class="nav-item">
                 <a class="nav-link" th:href="@{/account}">Account Settings</a>
@@ -91,16 +90,19 @@
             <span th:text="${postView.content}"></span>
             <hr />
 
-            <div class="row m-2" >
+            <div class="row m-2">
                 <div class="col-md-12" style="text-align: right">
-                        <span
-                            th:text="| Created on | + ${postView.dateTime} + | by | + ${postView.username}"
-                        ></span>
+              <span
+                      th:text="| Created on | + ${postView.dateTime} + | by | + ${postView.username}"
+              ></span>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<div class="container" id="commentsContainer"></div>
+
 <div
         class="modal fade"
         id="exampleModal"
@@ -110,11 +112,7 @@
         aria-hidden="true"
 >
     <div class="modal-dialog" role="document">
-        <form
-                th:action="@{/post}"
-                th:object="${postToAdd}"
-                method="post"
-        >
+        <form th:action="@{/post}" th:object="${postToAdd}" method="post">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">Add a new post</h5>
@@ -162,5 +160,28 @@
         </form>
     </div>
 </div>
+<script>
+    function grabPost() {
+        $.get(
+            "/api/comments/base?" +
+            window.location.href.substring(
+                window.location.href.indexOf("?id=") + 1,
+                window.location.href.length
+            ),
+            (datas, status) => {
+            if () {
+            for (let [k, v] of datas) {
+                console.log(k);
+                console.log(v);
+
+                //var element =
+                //'<div class="card m-2"><div class="row card-header"><div class="col-md-6"><h4>' + data.key.content + '</h4></div><div class="col-md-6" style="text-align: right">Created at '+  ' by</div></div><div class="row card-body">Load more comments</div></div>';
+            }
+        }
+    }
+    );
+    }
+    grabPost();
+</script>
 </body>
 </html>

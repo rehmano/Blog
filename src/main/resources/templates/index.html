@@ -12,8 +12,7 @@
             crossorigin="anonymous"
     />
     <script
-            src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+            src="https://code.jquery.com/jquery-3.3.1.min.js"
             crossorigin="anonymous"
     ></script>
     <script
@@ -69,12 +68,12 @@
     <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
-                <a class="nav-link" th:href="@{/}"
-                >Home <span class="sr-only">(current)</span></a
-                >
+                <a class="nav-link" th:href="@{/}">Home</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" th:href="@{/communities}">View Communities</a>
+                <a class="nav-link" th:href="@{/communities}"
+                >View Communities <span class="sr-only">(current)</span></a
+                >
             </li>
             <li class="nav-item">
                 <a class="nav-link" th:href="@{/account}">Account Settings</a>
@@ -95,6 +94,14 @@
     </div>
 </nav>
 
+<div class="container" id="postsContainer">
+
+</div>
+
+<div class="container mb-2" style="text-align: center">
+    <button class="btn btn-primary" id="loadButton">Load more posts</button>
+</div>
+
 <div
         class="modal fade"
         id="exampleModal"
@@ -104,11 +111,7 @@
         aria-hidden="true"
 >
     <div class="modal-dialog" role="document">
-        <form
-                th:action="@{/post}"
-                th:object="${postToAdd}"
-                method="post"
-        >
+        <form th:action="@{/post}" th:object="${postToAdd}" method="post">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">Add a new post</h5>
@@ -156,5 +159,57 @@
         </form>
     </div>
 </div>
+
+<script>
+    var postId;
+
+    function grabPost() {
+        $.get("/api/posts/news", (datas, status) => {
+            for (const data of datas) {
+            console.log(data);
+            $("#postsContainer").append(
+                '<div class="card m-2"><div class="row card-header"><div class="col-md-6"><a href="/post?id=' +
+                data.id +
+                '"><h3>' +
+                data.id +
+                ". " +
+                data.title +
+                '</h3></a></div><div class="col-md-6" style="text-align: right"><span>Created at ' +
+                data.dateTime +
+                " by " +
+                data.username +
+                "</span></div></div></div>"
+            );
+        }
+        postId = datas[datas.length - 1].id;
+        console.log(postId);
+    });
+    }
+
+    function grabPosts() {
+        $.get("/api/posts/new/" + postId, (datas, status) => {
+            for (const data of datas) {
+            console.log(data);
+            $("#postsContainer").append(
+                '<div class="card m-2"><div class="row card-header"><div class="col-md-6"><a href="/post?id=' +
+                data.id +
+                '"><h3>' +
+                data.id +
+                ". " +
+                data.title +
+                '</h3></a></div><div class="col-md-6" style="text-align: right"><span>Created at ' +
+                data.dateTime +
+                " by " +
+                data.username +
+                "</span></div></div></div>"
+            );
+        }
+        postId = datas[datas.length - 1].id;
+    });
+    }
+
+    $("#loadButton").click(grabPosts);
+    grabPost();
+</script>
 </body>
 </html>

@@ -1,5 +1,6 @@
 package com.app.blog.controller
 
+import com.app.blog.dao.PostsDao
 import com.app.blog.dao.UsersDao
 import com.app.blog.model.BarePost
 import org.joda.time.format.DateTimeFormat
@@ -9,10 +10,7 @@ import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Controller
 import org.springframework.validation.BindingResult
-import org.springframework.web.bind.annotation.ModelAttribute
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.*
 import org.springframework.web.servlet.ModelAndView
 import javax.validation.Valid
 
@@ -20,7 +18,8 @@ import javax.validation.Valid
 @RequestMapping("/post")
 class PostViewController @Autowired constructor(
         private val postController: PostController,
-        private val usersDao: UsersDao
+        private val usersDao: UsersDao,
+        private val postsDao: PostsDao
 ){
     @RequestMapping
     fun loadPost(@RequestParam id: Int): ModelAndView {
@@ -43,6 +42,8 @@ class PostViewController @Autowired constructor(
         modelAndView.viewName = "post"
         return modelAndView
     }
+
+
 
 
     fun getCurrentlyLoggedUser(): String? {
