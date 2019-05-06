@@ -39,7 +39,17 @@ class CommentController @Autowired constructor (
      * 1. Gets base comments for the passed post_id
      */
     @GetMapping("base")
-    fun loadBaseComments(@RequestParam id: Int): Map<Comment, Boolean> = commentsDao.getBaseCommentsForPost(id)
+    fun loadBaseComments(@RequestParam id: Int): List<BareComment>{
+        val p = commentsDao.getBaseCommentsForPost(id)
+        val x: MutableList<BareComment> = mutableListOf()
+        p.forEach{
+            val temp = it.key.toBareComment()
+            temp.hasChildren = it.value
+            x.plusAssign(temp)
+        }
+        x.forEach{println(it)}
+        return x
+    }
 
     /**
      * Function: addNewComment(comment: BareComment) -> Post
