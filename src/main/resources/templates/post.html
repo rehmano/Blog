@@ -11,20 +11,7 @@
             integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
             crossorigin="anonymous"
     />
-    <script
-            src="https://code.jquery.com/jquery-3.3.1.min.js"
-            crossorigin="anonymous"
-    ></script>
-    <script
-            src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-            crossorigin="anonymous"
-    ></script>
-    <script
-            src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-            crossorigin="anonymous"
-    ></script>
+
     <style>
         body {
             background-color: #000000;
@@ -37,6 +24,7 @@
             border-bottom: 1px solid black;
         }
     </style>
+    <link rel="icon" th:href="@{/css/1f171.ico}">
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
@@ -164,7 +152,25 @@
         </form>
     </div>
 </div>
+<script
+        src="https://code.jquery.com/jquery-3.3.1.min.js"
+        crossorigin="anonymous"
+></script>
+<script
+        src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"
+></script>
+<script
+        src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"
+></script>
 <script>
+    const removeComments = comment_id => {
+
+    }
+
     const getRepliesForCommentId = event => {
         const comment_id = event.currentTarget.dataset.id;
         $.get("/api/comments/load?id=" + comment_id, (datas, status) => {
@@ -193,6 +199,18 @@
             }
             element += '<div class="col-md-6"></div></div></div></div>';
             $("#" + comment_id + "Container").append(element);
+            console.log()
+                console.log($("#"+comment_id+"Button").text())
+                $("#" + comment_id + "Button").html('Close replies')
+                $("#" + comment_id + "Button").off()
+                $("#" + comment_id + "Button").click(() => {
+                    $("#" + data.comment_id + "Container").remove()
+                $("#" + comment_id + "Button").html('Load replies')
+                $("#" + comment_id + "Button").off()
+                $("#" + comment_id + "Button").click(getRepliesForCommentId);
+            });
+
+
             if (data.hasChildren) {
                 $("#" + data.comment_id + "Button").click(getRepliesForCommentId);
             }

@@ -44,7 +44,7 @@ class SecurityConfig @Autowired constructor(val dataSource: DataSource, val bCry
                     .antMatchers("/admin").hasRole("ADMIN")
                 .and()
                 .formLogin()
-                    .loginPage("/login")
+                    .loginPage("/login").failureForwardUrl("/login?error")
                 .and()
                 .logout()
                 .logoutRequestMatcher(AntPathRequestMatcher("/logout"))

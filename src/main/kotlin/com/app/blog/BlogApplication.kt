@@ -7,7 +7,7 @@ import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Bean
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import javax.sql.DataSource
-@SpringBootApplication(scanBasePackages = ["com.app.blog", "com.app.blog.dao"])
+@SpringBootApplication
 class BlogApplication @Autowired constructor(
         val dataSource: DataSource
 ){
