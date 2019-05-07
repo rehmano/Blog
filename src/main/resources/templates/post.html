@@ -92,10 +92,11 @@
 
             <div class="row">
                 <div class="col-md-6">
-                    <button class="btn btn-primary">Reply</button>
+                    <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#exampleModal">Reply</button>
                 </div>
                 <div class="col-md-6" style="text-align: right">
-              <span class="text-white"
+              <span
+                      class="text-white"
                       th:text="| Created on | + ${postView.dateTime} + | by | + ${postView.username}"
               ></span>
                 </div>
@@ -181,7 +182,7 @@
                 "</span></div></div>";
 
             element +=
-                '<div class="row card-body"><div class="col-md-6"><button class="btn btn-primary mr-2">Reply</button>';
+                '<div class="row card-body"><div class="col-md-6"><button class="btn btn-primary mr-2" type="button" data-toggle="modal" data-target="#exampleModal">Reply</button>';
             if (data.hasChildren) {
                 element +=
                     '<button class="btn btn-danger" data-id="' +
@@ -193,9 +194,7 @@
             element += '<div class="col-md-6"></div></div></div></div>';
             $("#" + comment_id + "Container").append(element);
             if (data.hasChildren) {
-                $("#" + data.comment_id + "Button").click(
-                    getRepliesForCommentId
-                );
+                $("#" + data.comment_id + "Button").click(getRepliesForCommentId);
             }
         }
     });
@@ -223,7 +222,7 @@
                 "</span></div></div>";
 
             element +=
-                '<div class="row card-body"><div class="col-md-6"><button class="btn btn-primary mr-2">Reply</button>';
+                '<div class="row card-body"><div class="col-md-6"><button class="btn btn-primary mr-2" type="button" data-toggle="modal" data-target="#exampleModal">Reply</button>';
             if (data.hasChildren) {
                 element +=
                     '<button class="btn btn-danger" data-id="' +
