@@ -282,7 +282,6 @@
         const comment_id = event.currentTarget.dataset.id;
         $.get("/api/comments/load?id=" + comment_id, (datas, status) => {
             for (const data of datas) {
-            console.log(data);
             var element =
                 '<div class="container" id="' +
                 data.comment_id +
@@ -345,7 +344,6 @@
             ),
             (datas, status) => {
             for (const data of datas) {
-            console.log(data);
             var element =
                 '<div class="container" id="' +
                 data.comment_id +

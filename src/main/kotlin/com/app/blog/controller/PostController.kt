@@ -110,7 +110,8 @@ class PostController @Autowired constructor(
     fun getNewPostss(): List<BarePost> {
         val posts = postsDao.getNewPosts()
         val barePosts: MutableList<BarePost> = mutableListOf()
-        posts.forEach {barePosts.plusAssign(it.toBarePost())}
+        val Posts: MutableList<BarePost> = mutableListOf()
+        barePosts.forEach{}
         return barePosts.reversed()
     }
 
