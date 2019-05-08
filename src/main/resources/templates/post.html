@@ -18,16 +18,20 @@
             background-image: url("data:image/svg+xml,%3Csvg width='42' height='44' viewBox='0 0 42 44' xmlns='http://www.w3.org/2000/svg'%3E%3Cg id='Page-1' fill='none' fill-rule='evenodd'%3E%3Cg id='brick-wall' fill='%23ffffff' fill-opacity='0.4'%3E%3Cpath d='M0 0h42v44H0V0zm1 1h40v20H1V1zM0 23h20v20H0V23zm22 0h20v20H22V23z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
         }
         .card {
-            border: 3px solid black;
+            border: 3px solid gray;
+        }
+        #commentsContainer .card {
+            border: 2px solid #2f3536;
         }
         nav {
-            border-bottom: 1px solid black;
+            border-top: 2px solid #007bff;
+            border-bottom: 2px solid #007bff;
         }
     </style>
-    <link rel="icon" th:href="@{/css/1f171.ico}">
+    <link rel="icon" th:href="@{/css/1f171.ico}" />
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
     <a class="navbar-brand" th:href="@{/}">Blog</a>
     <button
             class="navbar-toggler"
@@ -57,7 +61,7 @@
                 <a class="nav-link" th:href="@{/logout}">Logout</a>
             </li>
         </ul>
-        <span class="m-2" th:text="${username}"></span>
+        <span class="text-white m-2" th:text="${username}"></span>
         <button
                 type="button"
                 class="btn btn-primary"
@@ -70,7 +74,7 @@
 </nav>
 
 <div class="container">
-    <div class="card bg-dark m-2">
+    <div class="card bg-dark mt-4 mb-2">
         <div class="card-header">
             <h2 class="text-white" th:text="${postView.title}"></h2>
         </div>
@@ -80,7 +84,15 @@
 
             <div class="row">
                 <div class="col-md-6">
-                    <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#exampleModal">Reply</button>
+                    <button
+                            id="postViewButton"
+                            class="btn btn-primary"
+                            type="button"
+                            data-toggle="modal"
+                            data-target="#commentModal"
+                    >
+                        Reply
+                    </button>
                 </div>
                 <div class="col-md-6" style="text-align: right">
               <span
@@ -152,6 +164,79 @@
         </form>
     </div>
 </div>
+
+<div
+        class="modal fade"
+        id="commentModal"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="exampleModalLabels"
+        aria-hidden="true"
+>
+    <div class="modal-dialog" role="document">
+        <form
+                th:action="@{/post/addcomment}"
+                th:object="${commentToAdd}"
+                method="post"
+        >
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabels">
+                        Add a new comment
+                    </h5>
+                    <button
+                            type="button"
+                            class="close"
+                            data-dismiss="modal"
+                            aria-label="Close"
+                    >
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group" style="display: none;">
+                        <label for="postText">Post Id</label>
+                        <textarea
+                                class="form-control"
+                                id="postText"
+                                rows="3"
+                                th:field="*{post_id}"
+                        ></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="contents">Content</label>
+                        <textarea
+                                class="form-control"
+                                id="contents"
+                                rows="3"
+                                th:field="*{content}"
+                        ></textarea>
+                    </div>
+
+                    <div class="form-group" style="display: none;">
+                        <label for="commentChainText">Chain Id (Parent Comment)</label>
+                        <textarea
+                                class="form-control"
+                                id="commentChainText"
+                                rows="3"
+                                th:field="*{comment_chain_id}"
+                        ></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button
+                            type="button"
+                            class="btn btn-secondary"
+                            data-dismiss="modal"
+                    >
+                        Close
+                    </button>
+                    <button type="submit" class="btn btn-primary">Add comment</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
 <script
         src="https://code.jquery.com/jquery-3.3.1.min.js"
         crossorigin="anonymous"
@@ -167,9 +252,31 @@
         crossorigin="anonymous"
 ></script>
 <script>
-    const removeComments = comment_id => {
+    const deleteComment = comment_id => {
+        $.post("/api/comments/delete?id=" + comment_id, (datas, status) => {
+            if (datas == true) {
+            console.log("Deleted!");
+            window.location.href = window.location.href;
+        } else {
+            alert("Failed to delete comment.");
+        }
+    });
+    };
 
-    }
+    const canDeleteComment = comment_id => {
+        $.get("/api/comments/owns?id=" + comment_id, (datas, status) => {
+            if (datas == true) {
+            $("#" + comment_id + "RightBody").append(
+                '<button type="button" class="btn btn-danger" id="' +
+                comment_id +
+                'DeleteButton">Delete</button>'
+            );
+            $("#" + comment_id + "DeleteButton").click(() => {
+                deleteComment(comment_id);
+        });
+        }
+    });
+    };
 
     const getRepliesForCommentId = event => {
         const comment_id = event.currentTarget.dataset.id;
@@ -188,28 +295,39 @@
                 "</span></div></div>";
 
             element +=
-                '<div class="row card-body"><div class="col-md-6"><button class="btn btn-primary mr-2" type="button" data-toggle="modal" data-target="#exampleModal">Reply</button>';
+                '<div class="row card-body"><div class="col-md-6"><button id="' +
+                data.comment_id +
+                'Reply" class="btn btn-primary mr-2" type="button" data-toggle="modal" data-target="#commentModal">Reply</button>';
             if (data.hasChildren) {
                 element +=
                     '<button class="btn btn-danger" data-id="' +
                     data.comment_id +
                     '"id="' +
                     data.comment_id +
-                    'Button">Load replies</button></div>';
+                    'Button">Load replies</button>';
             }
-            element += '<div class="col-md-6"></div></div></div></div>';
-            $("#" + comment_id + "Container").append(element);
-            console.log()
-                console.log($("#"+comment_id+"Button").text())
-                $("#" + comment_id + "Button").html('Close replies')
-                $("#" + comment_id + "Button").off()
-                $("#" + comment_id + "Button").click(() => {
-                    $("#" + data.comment_id + "Container").remove()
-                $("#" + comment_id + "Button").html('Load replies')
-                $("#" + comment_id + "Button").off()
-                $("#" + comment_id + "Button").click(getRepliesForCommentId);
-            });
+            element +=
+                '</div><div class="col-md-6" id="' +
+                data.comment_id +
+                'RightBody" style="text-align:right"></div></div></div></div>';
 
+            $("#" + comment_id + "Container").append(element);
+            canDeleteComment(data.comment_id);
+            $("#" + comment_id + "Button")
+                .html("Close replies")
+                .off()
+                .click(() => {
+                $("#" + data.comment_id + "Container").remove();
+            $("#" + comment_id + "Button")
+                .html("Load replies")
+                .off()
+                .click(getRepliesForCommentId);
+        });
+
+            $("#" + data.comment_id + "Reply").click(() => {
+                $("#postText").val(data.post_id);
+            $("#commentChainText").val(data.comment_id);
+        });
 
             if (data.hasChildren) {
                 $("#" + data.comment_id + "Button").click(getRepliesForCommentId);
@@ -240,26 +358,49 @@
                 "</span></div></div>";
 
             element +=
-                '<div class="row card-body"><div class="col-md-6"><button class="btn btn-primary mr-2" type="button" data-toggle="modal" data-target="#exampleModal">Reply</button>';
+                '<div class="row card-body"><div class="col-md-6"><button id="' +
+                data.comment_id +
+                'Reply" class="btn btn-primary mr-2" type="button" data-toggle="modal" data-target="#commentModal">Reply</button>';
             if (data.hasChildren) {
                 element +=
-                    '<button class="btn btn-danger" data-id="' +
+                    '<button class="btn btn-primary" data-id="' +
                     data.comment_id +
                     '"id="' +
                     data.comment_id +
-                    'Button">Load replies</button></div>';
+                    'Button">Load replies</button>';
             }
-            element += '<div class="col-md-6"></div></div></div></div>';
+            element +=
+                '</div><div class="col-md-6" id="' +
+                data.comment_id +
+                'RightBody" style="text-align:right"></div></div></div></div>';
             $("#commentsContainer").append(element);
+            canDeleteComment(data.comment_id);
+            $("#" + data.comment_id + "Reply").click(() => {
+                $("#postText").val(data.post_id);
+            $("#commentChainText").val(data.comment_id);
+        });
             if (data.hasChildren) {
                 $("#" + data.comment_id + "Button").click(
                     getRepliesForCommentId
                 );
             }
+            if (data.content == "[DELETED]") {
+                $("#" + data.comment_id + "Reply").remove();
+            }
+
         }
     }
     );
     };
+    $("#postViewButton").click(() => {
+        $("#postText").val(
+        window.location.href.substring(
+            window.location.href.indexOf("?id=") + 4,
+            window.location.href.length
+        )
+    );
+    $("#commentChainText").val(null);
+    });
     grabPost();
 </script>
 </body>

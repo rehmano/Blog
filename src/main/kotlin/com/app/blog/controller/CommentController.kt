@@ -61,10 +61,23 @@ class CommentController @Autowired constructor (
     fun addNewComment(@RequestBody comment: BareComment) {
         commentsDao.insert(post_id2 = comment.post_id!!,
                 username = getCurrentlyLoggedUser(),
-                comment_chain_id2 = comment.comment_chain_id!!,
+                comment_chain_id2 = comment.comment_chain_id,
                 content2 = comment.content!!)
     }
 
+    @GetMapping("owns")
+    fun doesOwnComment(@RequestParam id: Int): Boolean {
+        return commentsDao.doesOwnComment(getCurrentlyLoggedUser(), id)
+    }
+
+    @PostMapping("delete")
+    fun deleteComment(@RequestParam id: Int): Boolean {
+        if(doesOwnComment(id)){
+            commentsDao.delete(id)
+            return true
+        }
+        return false
+    }
     /**
      * Function: getCurrentlyLoggedUser() -> String
      * 1. Grabs currently logged user from SecurityContext

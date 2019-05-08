@@ -89,7 +89,7 @@ class CommentsDao constructor(
     fun insert(post_id2: Int, username: String, comment_chain_id2: Int?, content2: String) {
         transaction(db1) {
             CommentsTable.insert {
-                println("[CommentsDao] Adding new Comment(username = \"$username\", title = \"$comment_chain_id2\", content = \"$content2\"")
+                println("[CommentsDao] Adding new Comment(post_id =\"$post_id2\", username = \"$username\", title = \"$comment_chain_id2\", content = \"$content2\")")
                 it[post_id] = post_id2
                 it[name] = username
                 it[comment_chain_id] = comment_chain_id2
@@ -143,6 +143,30 @@ class CommentsDao constructor(
         comments.orEmpty().forEach{commentsWithChild[it] = doesCommentHaveChildren(it)}
 
         return commentsWithChild
+    }
+    fun doesOwnComment(username: String, id: Int): Boolean {
+        val comment = selectQuery(CommentsTable.comment_id, id).orEmpty().first()
+        return comment.username == username
+    }
+
+    fun delete(id: Int) {
+        var comment: Comment? = null
+        transaction(db1) {
+            comment = CommentsTable.select{CommentsTable.comment_id eq id}.map{it.toCommentModel()}.first()
+            if(comment != null){
+                CommentsTable.deleteWhere{CommentsTable.comment_id eq id}
+                CommentsTable.insert {
+                    println("[CommentsDao] Updating Comment(post_id =\"${comment!!.post_id}\", comment_id=\"${comment!!.comment_id})")
+                    it[post_id] = comment!!.post_id
+                    it[comment_id] = comment!!.comment_id
+                    it[name] = "[DELETED]"
+                    it[comment_chain_id] = comment!!.comment_chain_id
+                    it[content] = "[DELETED]"
+                    it[date_created] = comment!!.date_created!!
+                }
+            }
+        }
+
     }
 
     /**

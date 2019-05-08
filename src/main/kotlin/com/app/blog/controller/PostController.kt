@@ -35,8 +35,8 @@ class PostController @Autowired constructor(
      * 1. Gets post for the passed ID
      */
     @GetMapping("{id}")
-    fun loadPost(@PathVariable(value="id") id: Int): Post {
-        return postsDao.getPostById(id)
+    fun loadPost(@PathVariable(value="id") id: Int): BarePost {
+        return postsDao.getPostById(id).toBarePost()
     }
     /**
      * Function: getPosts() -> List<Post>

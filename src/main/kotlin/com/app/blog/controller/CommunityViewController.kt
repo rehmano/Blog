@@ -27,6 +27,7 @@ class CommunityViewController @Autowired constructor(
         return modelAndView
     }
 
+
     fun getCurrentlyLoggedUser(): String? {
         val auth: Authentication = SecurityContextHolder.getContext().authentication
         return usersDao.findOneByUsername(auth.name)
