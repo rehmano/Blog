@@ -85,7 +85,6 @@
 
 <div class="container mt-4" id="postsContainer"></div>
 
-
 <div
         class="modal fade"
         id="exampleModal"
@@ -165,7 +164,7 @@
                 "</span></div></div></div>"
             );
         }
-        postId = datas[datas.length - 1].id;
+        postId = datas[(datas.length) - 1].id;
         console.log(postId);
     });
     }
@@ -196,10 +195,10 @@
     $(window).scroll(() => {
         if (
             $(window).height() + $(window).scrollTop() ==
-            $(document).height()
-        ) {
-            grabPosts();
-        }
+    $(document).height()
+    ) {
+        grabPosts();
+    }
     });
     beginPage();
 </script>

@@ -34,9 +34,13 @@ class CommunityDao constructor(
         }
     }
 
-    data class PostWithUsernameAndDate(val username: String, val dateTime: String)
-
-
+    fun getIdForName(name: String): Int? {
+        var x: Community? = null
+        transaction(db1) {
+            x = CommunityTable.select { CommunityTable.community_name eq name }.map{it.toCommunity()}.first()
+        }
+        return x?.id
+    }
 
 
     private fun ResultRow.toCommunity() = CommunityTable.rowToCommunity(this)

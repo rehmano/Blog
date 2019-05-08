@@ -308,7 +308,9 @@
             element +=
                 '</div><div class="col-md-6" id="' +
                 data.comment_id +
-                'RightBody" style="text-align:right"></div></div></div><div class="container" id="'+data.comment_id+'CommentChildren"></div>';
+                'RightBody" style="text-align:right"></div></div></div><div class="container" id="' +
+                data.comment_id +
+                'CommentChildren"></div>';
 
             $("#" + comment_id + "CommentChildren").append(element);
             canDeleteComment(data.comment_id);
@@ -388,6 +390,9 @@
             }
             if (data.content == "[DELETED]") {
                 $("#" + data.comment_id + "Reply").remove();
+                if(data.hasChildren == false){
+                    $("#" + data.comment_id + "Container").remove()
+                }
             }
         }
     }
